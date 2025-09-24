@@ -205,21 +205,19 @@ class _ClassroomScreenState extends State<ClassroomScreen> {
             ),
           );
 
-          final pdfArea = Expanded(
-            child: _pdfPath == null
-                ? const Center(child: Text('Select a PDF'))
-                : PdfViewer(path: _pdfPath!),
-          );
+          final Widget pdfContent = _pdfPath == null
+              ? const Center(child: Text('Select a PDF'))
+              : PdfViewer(path: _pdfPath!);
 
           if (isNarrow) {
             return Column(
               children: [
-                SizedBox(height: 300, child: pdfArea),
+                SizedBox(height: 300, child: pdfContent),
                 Expanded(child: sidePanel),
               ],
             );
           }
-          return Row(children: [pdfArea, sidePanel]);
+          return Row(children: [Expanded(child: pdfContent), sidePanel]);
         },
       ),
     );
