@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dashboard_screen.dart';
 import '../../video_list_screen.dart';
 import 'nearby_connections_screen.dart';
+import 'quiz_screen.dart';
 
 class HomeShell extends StatefulWidget {
   final int initialIndex;
@@ -27,17 +28,53 @@ class _HomeShellState extends State<HomeShell> {
       const DashboardScreen(),
       const VideoListScreen(),
       const NearbyConnectionsScreen(),
+      const QuizScreen(),
     ];
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA),
       body: SafeArea(child: pages[_index]),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _index,
-        onTap: (i) => setState(() => _index = i),
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.class_), label: 'Dashboard'),
-          BottomNavigationBarItem(icon: Icon(Icons.video_library_outlined), label: 'Recorded'),
-          BottomNavigationBarItem(icon: Icon(Icons.share), label: 'P2P'),
-        ],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _index,
+          onTap: (i) => setState(() => _index = i),
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.white,
+          selectedItemColor: const Color(0xFF2196F3),
+          unselectedItemColor: const Color(0xFF666666),
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.dashboard_outlined),
+              activeIcon: Icon(Icons.dashboard),
+              label: 'Dashboard',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.video_library_outlined),
+              activeIcon: Icon(Icons.video_library),
+              label: 'Videos',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.share_outlined),
+              activeIcon: Icon(Icons.share),
+              label: 'Share',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.quiz_outlined),
+              activeIcon: Icon(Icons.quiz),
+              label: 'Quiz',
+            ),
+          ],
+        ),
       ),
     );
   }

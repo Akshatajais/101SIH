@@ -65,8 +65,19 @@ class _ClassroomScreenState extends State<ClassroomScreen> {
   Widget build(BuildContext context) {
     final String streamUrl = widget.args?.audioStreamUrl ?? 'https://stream.live.vc.bbcmedia.co.uk/bbc_world_service';
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA),
       appBar: AppBar(
-        title: const Text('Live Class'),
+        title: const Text(
+          'Live Class',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color(0xFF2196F3),
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
             tooltip: 'Pick PDF',

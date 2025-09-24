@@ -52,39 +52,111 @@ class VideoListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: const Color(0xFFF5F7FA),
       appBar: AppBar(
         title: const Text(
           'Lecture Videos',
-          style: TextStyle(fontWeight: FontWeight.w600),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
-        backgroundColor: Colors.blue[600],
-        foregroundColor: Colors.white,
-        elevation: 2,
+        centerTitle: true,
+        backgroundColor: const Color(0xFF2196F3),
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: _lectureVideos.length,
-        itemBuilder: (context, index) {
-          final video = _lectureVideos[index];
-          return _buildVideoItem(context, video);
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF2196F3), Color(0xFF1976D2)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.play_circle_filled,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                  const SizedBox(width: 15),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Educational Videos',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          '${_lectureVideos.length} lectures available',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.white70,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _lectureVideos.length,
+                itemBuilder: (context, index) {
+                  final video = _lectureVideos[index];
+                  return _buildVideoItem(context, video);
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildVideoItem(BuildContext context, VideoModel video) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 15),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: InkWell(
         onTap: () => _navigateToVideoPlayer(context, video),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(15),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           child: Row(
             children: [
               // Thumbnail placeholder
@@ -92,17 +164,20 @@ class VideoListScreen extends StatelessWidget {
                 width: 80,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: Colors.blue[100],
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.blue[200]!),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF2196F3), Color(0xFF1976D2)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.play_circle_filled,
-                  color: Colors.blue[600],
+                  color: Colors.white,
                   size: 32,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 20),
               // Video details
               Expanded(
                 child: Column(
@@ -112,27 +187,40 @@ class VideoListScreen extends StatelessWidget {
                       video.title,
                       style: const TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF333333),
+                        height: 1.3,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(
-                          Icons.access_time,
-                          size: 16,
-                          color: Colors.grey[600],
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          video.duration,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.w500,
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF2196F3).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.access_time,
+                                size: 14,
+                                color: Color(0xFF2196F3),
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                video.duration,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xFF2196F3),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -141,10 +229,17 @@ class VideoListScreen extends StatelessWidget {
                 ),
               ),
               // Play indicator
-              Icon(
-                Icons.chevron_right,
-                color: Colors.grey[400],
-                size: 24,
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2196F3).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.play_arrow,
+                  color: Color(0xFF2196F3),
+                  size: 24,
+                ),
               ),
             ],
           ),
