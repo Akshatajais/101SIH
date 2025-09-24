@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
 
 import 'dashboard_screen.dart';
-import 'recorded_screen.dart';
+import '../../video_list_screen.dart';
 import 'p2p_screen.dart';
 
 class HomeShell extends StatefulWidget {
-  const HomeShell({super.key});
+  final int initialIndex;
+  const HomeShell({super.key, this.initialIndex = 0});
 
   @override
   State<HomeShell> createState() => _HomeShellState();
 }
 
 class _HomeShellState extends State<HomeShell> {
-  int _index = 0;
+  late int _index;
+
+  @override
+  void initState() {
+    super.initState();
+    _index = widget.initialIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
     final pages = <Widget>[
       const DashboardScreen(),
-      RecordedScreen(),
+      const VideoListScreen(),
       const P2PScreen(),
     ];
     return Scaffold(
@@ -28,7 +35,7 @@ class _HomeShellState extends State<HomeShell> {
         onTap: (i) => setState(() => _index = i),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.class_), label: 'Dashboard'),
-          BottomNavigationBarItem(icon: Icon(Icons.library_music), label: 'Recorded'),
+          BottomNavigationBarItem(icon: Icon(Icons.video_library_outlined), label: 'Recorded'),
           BottomNavigationBarItem(icon: Icon(Icons.share), label: 'P2P'),
         ],
       ),
