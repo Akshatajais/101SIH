@@ -1,8 +1,5 @@
-
 import 'package:flutter/material.dart';
-
 import '../services/pdf_service.dart';
-import '../services/scheduler_service.dart';
 import 'classroom_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -15,14 +12,11 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   late final PdfService _pdfService;
-  late final SchedulerService _schedulerService;
 
   @override
   void initState() {
     super.initState();
     _pdfService = PdfService();
-    _schedulerService = SchedulerService();
-    _schedulerService.initializeWorkmanager();
   }
 
   @override
@@ -62,19 +56,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Navigator.of(context).pushNamed(
                       ClassroomScreen.routeName,
                       arguments: const ClassroomArgs(
-                        audioStreamUrl: 'https://stream.live.vc.bbcmedia.co.uk/bbc_world_service',
+                        audioStreamUrl:
+                            'https://stream.live.vc.bbcmedia.co.uk/bbc_world_service',
                       ),
                     );
                   },
                   child: const Text('Join Class'),
                 ),
                 OutlinedButton(
-                  onPressed: () async {
-                    await _schedulerService.scheduleOvernightDownloads();
-                    if (!mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Overnight PPT downloads scheduled')),
-                    );
+                  onPressed: () {
+                    // No-op button, removed SchedulerService completely
                   },
                   child: const Text('Download PPT Overnight'),
                 ),
@@ -82,7 +73,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   onPressed: () async {
                     try {
                       await _pdfService.downloadAndSavePdf(
-                        url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+                        url:
+                            'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
                         title: 'Demo_Slides',
                       );
                       if (!mounted) return;
@@ -93,7 +85,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     } catch (e) {
                       if (!mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Failed to install demo PDF: $e')),
+                        SnackBar(
+                            content: Text('Failed to install demo PDF: $e')),
                       );
                     }
                   },
@@ -122,7 +115,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       final item = items[index];
                       return ListTile(
                         title: Text(item.title),
-                        subtitle: Text('${(item.sizeBytes / (1024 * 1024)).toStringAsFixed(2)} MB'),
+                        subtitle: Text(
+                            '${(item.sizeBytes / (1024 * 1024)).toStringAsFixed(2)} MB'),
                         trailing: IconButton(
                           icon: const Icon(Icons.delete_outline),
                           onPressed: () async {
@@ -134,7 +128,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Navigator.of(context).pushNamed(
                             ClassroomScreen.routeName,
                             arguments: ClassroomArgs(
-                              audioStreamUrl: 'https://stream.live.vc.bbcmedia.co.uk/bbc_world_service',
+                              audioStreamUrl:
+                                  'https://stream.live.vc.bbcmedia.co.uk/bbc_world_service',
                               initialPdfPath: item.filePath,
                             ),
                           );
@@ -159,5 +154,3 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return '$hh:$mm $ampm';
   }
 }
-
-
