@@ -48,7 +48,7 @@ void _callbackDispatcher() {
       // In a real app, fetch teacher-published PDF URLs from server
       final List<Map<String, String>> mock = [
         {
-          'url': 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+          'url': 'https://basponccollege.org/LMS/EMaterial/Science/Comp/HVP/JS%20Notes.pdf',
           'title': 'Tomorrow_Class_Slides'
         }
       ];

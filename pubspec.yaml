@@ -1,15 +1,24 @@
-name: abeja
-description: "A new Flutter project."
+name: stud_new
+description: A Flutter app combining lecture streaming + document/audio features
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.0+1
 
 environment:
-  sdk: ^3.6.1
+  sdk: ^3.6.1  # use the latest since your Flutter is 3.27.2 with Dart 3.6.1
 
 dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+
+  # From chacing (video app)
+  video_player: ^2.8.6
+  chewie: ^1.11.3
+
+  # From both apps (take latest)
+  shared_preferences: ^2.3.3
+
+  # From abeja (pdf, audio, network, background work)
   http: ^1.2.2
   dio: ^5.7.0
   path_provider: ^2.1.4
@@ -19,7 +28,6 @@ dependencies:
   audio_session: ^0.1.19
   workmanager: ^0.5.2
   connectivity_plus: ^6.1.1
-  shared_preferences: ^2.3.3
 
 dev_dependencies:
   flutter_test:
