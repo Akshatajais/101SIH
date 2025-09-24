@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'dashboard_screen.dart';
 import '../../video_list_screen.dart';
-import 'p2p_screen.dart';
+import 'nearby_connections_screen.dart';
 
 class HomeShell extends StatefulWidget {
   final int initialIndex;
@@ -26,7 +26,7 @@ class _HomeShellState extends State<HomeShell> {
     final pages = <Widget>[
       const DashboardScreen(),
       const VideoListScreen(),
-      const P2PScreen(),
+      const NearbyConnectionsScreen(),
     ];
     return Scaffold(
       body: SafeArea(child: pages[_index]),
