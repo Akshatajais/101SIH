@@ -23,4 +23,5 @@ plugins {
 }
 
 include ":app"
-include ':nearby_connections'
+// The plugin will be resolved by Flutter's plugin mechanism; do not manually include
+// include ':nearby_connections'
