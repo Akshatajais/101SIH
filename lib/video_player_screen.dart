@@ -209,13 +209,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: const Color(0xFF0F1115),
       appBar: AppBar(
-        title: Text(
-          widget.video.title,
-          style: const TextStyle(fontSize: 16),
-        ),
-        backgroundColor: Colors.black,
+        title: Text(widget.video.title, style: const TextStyle(fontSize: 16, color: Colors.white)),
+        backgroundColor: const Color(0xFF0F1115),
         foregroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -229,7 +226,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
           Container(
             width: double.infinity,
             height: 250,
-            color: Colors.black,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF0F1115), Color(0xFF12151B)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
             child: _buildVideoPlayer(),
           ),
           // Video information
@@ -311,41 +314,32 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Network optimization tips
+                  // Course-related description beneath the title
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.green[50],
+                      color: Colors.grey[50],
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.green[200]!),
+                      border: Border.all(color: Colors.grey[200]!),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.network_check,
-                              color: Colors.green[700],
-                              size: 20,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Network Optimized',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.green[700],
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '• Adaptive bitrate streaming\n• Automatic buffering\n• Resume from interruptions',
+                        const Text(
+                          'About this lecture',
                           style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.green[600],
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'A concise, practical explanation aligned with the course topic. This lecture introduces the key ideas and demonstrates core techniques with examples.',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey[700],
+                            height: 1.4,
                           ),
                         ),
                       ],

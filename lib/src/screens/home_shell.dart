@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'dashboard_screen.dart';
-import '../../video_list_screen.dart';
+import 'course_list_screen.dart';
 import 'nearby_connections_screen.dart';
 import 'quiz_screen.dart';
 
@@ -26,7 +26,7 @@ class _HomeShellState extends State<HomeShell> {
   Widget build(BuildContext context) {
     final pages = <Widget>[
       const DashboardScreen(),
-      const VideoListScreen(),
+      const CourseListScreen(),
       const NearbyConnectionsScreen(),
       const QuizScreen(),
     ];
@@ -59,9 +59,9 @@ class _HomeShellState extends State<HomeShell> {
               label: 'Dashboard',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.video_library_outlined),
-              activeIcon: Icon(Icons.video_library),
-              label: 'Videos',
+              icon: Icon(Icons.library_books_outlined),
+              activeIcon: Icon(Icons.library_books),
+              label: 'Courses',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.share_outlined),

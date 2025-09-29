@@ -28,3 +28,4 @@ To set up the Gyaan Setu app icon:
    - macOS: 1024x1024
 
 The flutter_launcher_icons package will automatically generate all required sizes from the source PNG file.
+
