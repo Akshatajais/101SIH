@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/pdf_service.dart';
+import '../services/scheduler_service.dart';
 import 'classroom_screen.dart';
 import 'nearby_connections_screen.dart';
 
@@ -135,8 +136,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     title: 'Download PPT',
                     subtitle: 'Overnight',
                     color: const Color(0xFFFF9800),
-                    onTap: () {
-                      // No-op button, removed SchedulerService completely
+                    onTap: () async {
+                      final hour = await _pickOvernightHour(context);
+                      if (hour != null) {
+                        await SchedulerService.instance.scheduleOvernightDownload(hour24: hour);
+                        if (!mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Overnight download scheduled at ${_format24h(hour)}')),
+                        );
+                      }
                     },
                   ),
                 ),
@@ -433,5 +441,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final String mm = two(dt.minute);
     final String ampm = dt.hour >= 12 ? 'PM' : 'AM';
     return '$hh:$mm $ampm';
+  }
+
+  Future<int?> _pickOvernightHour(BuildContext context) async {
+    // Show a simple bottom sheet with hour options 22..23 and 0..5
+    final options = <int>[22, 23, 0, 1, 2, 3, 4, 5];
+    return showModalBottomSheet<int>(
+      context: context,
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text('Choose download hour', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+              ...options.map((h) => ListTile(
+                    leading: const Icon(Icons.schedule),
+                    title: Text(_format24h(h)),
+                    onTap: () => Navigator.pop(ctx, h),
+                  )),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  String _format24h(int h) {
+    final dt = DateTime(2020, 1, 1, h);
+    return _formatTime(dt);
   }
 }

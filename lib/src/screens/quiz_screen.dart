@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/quiz_service.dart';
+import 'home_shell.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key, this.quizId = 'sample-quiz', this.studentId = 'student-123'});
@@ -548,8 +549,12 @@ class _QuizScreenState extends State<QuizScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigate back to dashboard (index 0)
-                    Navigator.of(context).popUntil((route) => route.isFirst);
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (_) => const HomeShell(initialIndex: 0),
+                      ),
+                      (route) => false,
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
