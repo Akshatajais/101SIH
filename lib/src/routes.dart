@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'screens/dashboard_screen.dart';
 import 'screens/classroom_screen.dart';
+import 'screens/quiz_screen.dart';
 
 class AppRoutes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -14,6 +15,11 @@ class AppRoutes {
       case ClassroomScreen.routeName:
         return MaterialPageRoute(
           builder: (_) => ClassroomScreen(args: settings.arguments as ClassroomArgs?),
+          settings: settings,
+        );
+      case '/quiz':
+        return MaterialPageRoute(
+          builder: (_) => const QuizScreen(),
           settings: settings,
         );
       default:

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import '../services/quiz_service.dart';
 
 class QuizScreen extends StatefulWidget {
-  const QuizScreen({super.key});
+  const QuizScreen({super.key, this.quizId = 'sample-quiz', this.studentId = 'student-123'});
+
+  final String quizId;
+  final String studentId;
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -12,55 +16,47 @@ class _QuizScreenState extends State<QuizScreen> {
   int score = 0;
   bool quizCompleted = false;
   List<int> selectedAnswers = [];
-
-  final List<Map<String, dynamic>> questions = [
-    {
-      'question': 'What is the capital of India?',
-      'options': ['Mumbai', 'Delhi', 'Kolkata', 'Chennai'],
-      'correct': 1,
-    },
-    {
-      'question': 'Which programming language is used for Flutter development?',
-      'options': ['Java', 'Dart', 'Python', 'JavaScript'],
-      'correct': 1,
-    },
-    {
-      'question': 'What does API stand for?',
-      'options': [
-        'Application Programming Interface',
-        'Advanced Programming Interface',
-        'Automated Programming Interface',
-        'Application Process Interface'
-      ],
-      'correct': 0,
-    },
-    {
-      'question': 'Which of the following is a NoSQL database?',
-      'options': ['MySQL', 'PostgreSQL', 'MongoDB', 'SQLite'],
-      'correct': 2,
-    },
-    {
-      'question': 'What is the primary purpose of version control?',
-      'options': [
-        'To store files',
-        'To track changes in code',
-        'To compile programs',
-        'To debug applications'
-      ],
-      'correct': 1,
-    },
-  ];
+  List<Map<String, dynamic>> questions = [];
+  bool loading = true;
+  final QuizService _service = QuizService();
 
   @override
   void initState() {
     super.initState();
-    selectedAnswers = List.filled(questions.length, -1);
+    _load();
   }
 
-  void selectAnswer(int answerIndex) {
+  Future<void> _load() async {
+    try {
+      final data = await _service.fetchQuiz(widget.quizId);
+      final List q = data['questions'] as List;
+      questions = q.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+      currentQuestionIndex = 0;
+      selectedAnswers = List.filled(questions.length, -1);
+      setState(() {
+        loading = false;
+      });
+    } catch (_) {
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  void selectAnswer(int answerIndex) async {
+    if (questions.isEmpty || currentQuestionIndex < 0 || currentQuestionIndex >= questions.length) {
+      return;
+    }
     setState(() {
       selectedAnswers[currentQuestionIndex] = answerIndex;
     });
+    final q = questions[currentQuestionIndex];
+    await _service.submitResponse(
+      quizId: widget.quizId,
+      studentId: widget.studentId,
+      questionId: q['questionId'] as String,
+      selectedIndex: answerIndex,
+    );
   }
 
   void nextQuestion() {
@@ -118,8 +114,95 @@ class _QuizScreenState extends State<QuizScreen> {
         backgroundColor: const Color(0xFF2196F3),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
+        actions: [
+          IconButton(
+            tooltip: 'Download for offline',
+            onPressed: () async {
+              try {
+                await _service.downloadQuizForOffline(widget.quizId);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Quiz saved for offline use')),
+                  );
+                }
+              } catch (_) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Failed to download quiz')),
+                  );
+                }
+              }
+            },
+            icon: const Icon(Icons.download),
+          ),
+        ],
       ),
-      body: quizCompleted ? _buildResultScreen() : _buildQuizScreen(),
+      body: loading
+          ? const Center(child: CircularProgressIndicator())
+          : questions.isEmpty
+              ? _buildEmptyState()
+              : (quizCompleted ? _buildResultScreen() : _buildQuizScreen()),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.quiz_outlined, size: 48, color: Color(0xFF2196F3)),
+            const SizedBox(height: 12),
+            const Text(
+              'No questions available for this quiz.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xFF333333)),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Please check your connection or try again later.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14, color: Color(0xFF666666)),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () async {
+                setState(() { loading = true; });
+                await _load();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2196F3),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Retry'),
+            ),
+            const SizedBox(height: 10),
+            OutlinedButton(
+              onPressed: () async {
+                final cached = await _service.loadOfflineQuiz(widget.quizId);
+                if (cached != null) {
+                  setState(() {
+                    questions = List<Map<String, dynamic>>.from(
+                      (cached['questions'] as List).map((e) => Map<String, dynamic>.from(e as Map)),
+                    );
+                    selectedAnswers = List.filled(questions.length, -1);
+                    currentQuestionIndex = 0;
+                    quizCompleted = false;
+                  });
+                } else {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('No offline quiz found')),
+                    );
+                  }
+                }
+              },
+              child: const Text('Load Offline'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -206,7 +289,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 ),
                 const SizedBox(height: 15),
                 Text(
-                  question['question'],
+                  question['prompt'],
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -223,10 +306,10 @@ class _QuizScreenState extends State<QuizScreen> {
           // Options
           Expanded(
             child: ListView.builder(
-              itemCount: question['options'].length,
+              itemCount: (question['options'] as List).length,
               itemBuilder: (context, index) {
                 final isSelected = selectedAnswers[currentQuestionIndex] == index;
-                final option = question['options'][index];
+                final option = (question['options'] as List)[index];
 
                 return Container(
                   margin: const EdgeInsets.only(bottom: 15),
@@ -265,7 +348,7 @@ class _QuizScreenState extends State<QuizScreen> {
                             ),
                             child: Center(
                               child: Text(
-                                String.fromCharCode(65 + index), // A, B, C, D
+                                String.fromCharCode(65 + index),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: isSelected ? const Color(0xFF2196F3) : const Color(0xFF666666),
@@ -351,7 +434,7 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Widget _buildResultScreen() {
-    final percentage = (score / questions.length * 100).round();
+    final percentage = (score / (questions.isEmpty ? 1 : questions.length) * 100).round();
     String message;
     Color messageColor;
     IconData messageIcon;
